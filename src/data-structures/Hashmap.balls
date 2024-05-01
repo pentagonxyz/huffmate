@@ -22,7 +22,6 @@ fn GET_SLOT_FROM_KEYS<mem_ptr>(slot, key) -> (hashed) {
     mstore(add(mem_ptr, 0x20), slot)
     mstore(mem_ptr, key)
     
-    
     // Hash the data, generating a slot.
     hashed = sha3(mem_ptr, 0x40)
 }
@@ -30,31 +29,30 @@ fn GET_SLOT_FROM_KEYS<mem_ptr>(slot, key) -> (hashed) {
 
 /// @notice Calculate the slot from two keys
 fn GET_SLOT_FROM_KEYS_2D<mem_ptr>(slot, key1, key2) -> (hashed) {
-    // Load the data into memory.
-    mstore(add(mem_ptr, 0x20), slot)
     mstore(mem_ptr, key1)
-    sha3(mem_ptr, 0x40)
+
+    _ptr_plus_32 = add(mem_ptr, 0x20)
+    mstore(_ptr_plus_32, slot)
+    mstore(_ptr_plus_32, sha3(mem_ptr, 0x40))
     
-    mstore(add(mem_ptr, 0x20), key2)
-    
+    mstore(mem_ptr, key2)
     // Hash the data, generating a slot.
     hashed = sha3(mem_ptr, 0x40)
 }
 
 /// @notice Calculate the slot from three keys
 fn GET_SLOT_FROM_KEYS_3D<mem_ptr>(slot, key1, key2, key3) -> (hashed) {
-    // Load the data into memory
-    mstore(add(mem_ptr, 0x20), slot)
-    // concat the first two keys
     mstore(mem_ptr, key1)
-    sha3(mem_ptr, 0x40)
 
-    // put key2 in memory, before slot1
-    mstore(add(mem_ptr, 0x20), key2)
-    sha3(mem_ptr, 0x40)
+    _ptr_plus_32 = add(mem_ptr, 0x20)
+    mstore(_ptr_plus_32, slot)
+    mstore(_ptr_plus_32, sha3(mem_ptr, 0x40))
+    
+    mstore(mem_ptr, key2)
+    mstore(_ptr_plus_32, sha3(mem_ptr, 0x40))
 
     // put key3 in memory, before slot2
-    mstore(add(mem_ptr, 0x20), key3)
+    mstore(mem_ptr, key3)
     // Hash the data, generating the final slot3
     hashed = sha3(mem_ptr, 0x40)
 }
